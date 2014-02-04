@@ -1,6 +1,5 @@
 # Project settings
 default['drupal']['dir'] = "/var/www"
-default['drupal']['version'] = "7.26"
 
 # DB Credentials
 default['drupal']['db']['database'] = "demo"
@@ -14,5 +13,5 @@ default['drupal']['site']['pass'] = "admin"
 default['drupal']['site']['name'] = "Drupal"
 default['drupal']['site']['host'] = "localhost"
 
-# List of modules to install
+# List of modules to enable
 default['drupal']['modules'] = ["ctools", "devel", "views", "admin_menu", "features", "diff", "shiny", "omega"]

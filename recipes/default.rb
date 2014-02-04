@@ -1,20 +1,20 @@
 # Deploy Drupal site.
-#require_recipe "drush"
-#require_recipe "drupal_skilld::drush_make"
+unless File.exists?("#{node['drupal']['dir']}/index.php")
 
-# Copy make file to site.
-#cookbook_file "#{node['drupal']['dir']}/example.make" do
-#  source "example.make"
-#  notifies :restart, resources("service[nginx]"), :delayed
-#end
+  require_recipe "drush"
+  require_recipe "drupal_recipe::drush_make"
 
-# drush make a default drupal site
-#bash "deploy-drupal-site" do
-#  code <<-EOH
-#(cd #{node['drupal']['dir']}; drush make example.make www --prepare-install)
-#  EOH
-#  not_if { File.exists?("#{node['drupal']['dir']}/index.php") }
-#end
+  # Copy make file to site.
+  cookbook_file "#{node['drupal']['dir']}/drupal.make" do
+    source "drupal.make"
+    notifies :restart, resources("service[nginx]"), :delayed
+  end
+
+  # drush make a default drupal site
+  execute "deploy-drupal-site" do
+    cwd node['drupal']['dir']
+    command "drush -y make drupal.make --prepare-install"
+  end
 
 # Download Drupal into project directory
 #execute "download-drupal" do
@@ -23,25 +23,30 @@
 #  not_if { File.exists?("#{node['drupal']['dir']}/index.php") }
 #end
 
-unless File.exists?("#{node['drupal']['dir']}/index.php")
-  # Get Drupal tar
-  remote_file "#{node['drupal']['dir']}/drupal-#{node['drupal']['version']}.tar.gz" do
-    source "http://ftp.drupal.org/files/projects/drupal-#{node['drupal']['version']}.tar.gz"
-    mode 0644
-    action :create_if_missing
-  end
+#  # Get Drupal tar
+#  remote_file "#{node['drupal']['dir']}/drupal-#{node['drupal']['version']}.tar.gz" do
+#    source "http://ftp.drupal.org/files/projects/drupal-#{node['drupal']['version']}.tar.gz"
+#    mode 0644
+#    action :create_if_missing
+#  end
   
-  # Extract Drupal
-  execute "untar-drupal" do
-    cwd node['drupal']['dir']
-    command "tar -xzf drupal-#{node['drupal']['version']}.tar.gz -C #{node['drupal']['dir']} --strip-components=1"
-  end
+#  # Extract Drupal
+#  execute "untar-drupal" do
+#    cwd node['drupal']['dir']
+#    command "tar -xzf drupal-#{node['drupal']['version']}.tar.gz -C #{node['drupal']['dir']} --strip-components=1"
+#  end
 
-  # Create files directory
-  directory "#{node['drupal']['dir']}/sites/default/files" do
-    mode "0777"
-    action :create
-  end
+
+#  # Remove drupal tar.gz
+#  file "#{node['drupal']['dir']}/drupal-#{node['drupal']['version']}.tar.gz" do
+#    action :delete
+#  end
+
+#  # Create files directory
+#  directory "#{node['drupal']['dir']}/sites/default/files" do
+#    mode "0777"
+#    action :create
+#  end
 
   # Install Drupal using given credentials
   execute "install-drupal" do
@@ -50,13 +55,8 @@ unless File.exists?("#{node['drupal']['dir']}/index.php")
 --db-url=mysql://#{node['drupal']['db']['user']}:'#{node['drupal']['db']['password']}'@#{node['drupal']['db']['host']}/#{node['drupal']['db']['database']}"
   end
 
-  # Remove drupal tar.gz
-  file "#{node['drupal']['dir']}/drupal-#{node['drupal']['version']}.tar.gz" do
-    action :delete
-  end
-
-  # Create directory for contrib modules
-  directory "#{node['drupal']['dir']}/sites/all/modules/contrib" do
+  # Create directory for custom modules
+  directory "#{node['drupal']['dir']}/sites/all/modules/custom" do
     mode "0777"
     action :create
   end
