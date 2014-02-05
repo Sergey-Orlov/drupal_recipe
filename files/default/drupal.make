@@ -17,12 +17,43 @@ projects[] = drupal
 defaults[projects][subdir] = contrib
 
 ; Modules
+projects[] = backup_migrate
 projects[] = ctools
 projects[] = views
 projects[] = devel
-projects[] = admin_menu
 projects[] = features
 projects[] = diff
+projects[] = token
+projects[] = panels
+projects[] = panels_everywhere
+projects[] = ds
+projects[] = pathauto
+projects[] = ckeditor
+projects[] = entity
+projects[] = entityreference
+projects[] = field_collection
+projects[] = libraries
+projects[] = navbar
+projects[] = strongarm 
+projects[] = page_title
+projects[] = metatag
+projects[] = xmlsitemap
+projects[] = addressfield
+projects[] = link
+projects[] = date
+projects[] = advagg
+projects[] = css_emimage
+projects[] = email
+projects[] = entitycache
+projects[] = admin_menu
+projects[] = field_group
+projects[] = rules
+projects[] = htmlmail
+projects[] = jquery_update
+projects[] = logintoboggan
+projects[] = panels_breadcrumbs
+projects[] = pm_existing_pages
+projects[] = compass
 
 ; Themes
 projects[omega][subdir] = .
